@@ -1,17 +1,25 @@
 import discord
+from discord.ext import commands
+from discord.flags import Intents
 
-client = discord.Client()
+Intents = discord.intents.all()
+intents = Intents.members = True
 
-@client.event
+bot = commands.Bot(command_prefix='[',intents=intents)
+
+@bot.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print("Bot is Online")
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+@bot.event
+async def on_member_join(member):
+    channel = bot.get_channel(881521268690673674)
+    await channel.send(f"{member}join!")
 
-client.run('')
+
+@bot.event
+async def on_member_remove(member):
+    channel = bot.get_channel(881521330321768468)
+    await channel.send(f"{member}leave!")
+
+bot.run("ODgwMzM1MzY2MDk4NDE5Nzgy.YScyMw.jPgdFHn3SHgremPd9k_ecTk19OU")
