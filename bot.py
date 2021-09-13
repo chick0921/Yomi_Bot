@@ -1,11 +1,15 @@
 import discord
 from discord.ext import commands
+import json
 from discord.flags import Intents
 
-Intents = discord.intents.all()
-intents = Intents.members = True
+with open('setting.json','r',encoding='utf-8') as file:
+    data = json.load(file)
 
-bot = commands.Bot(command_prefix='[',intents=intents)
+Intents = discord.Intents.all()
+Intents.members = True
+
+bot = commands.Bot(command_prefix='!',intents=Intents)
 
 @bot.event
 async def on_ready():
@@ -13,13 +17,17 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    channel = bot.get_channel(881521268690673674)
-    await channel.send(f"{member}join!")
+    channel = bot.get_channel(int(data['Welcome_Channel']))
+    await channel.send(f"{member} join!")
 
 
 @bot.event
 async def on_member_remove(member):
-    channel = bot.get_channel(881521330321768468)
-    await channel.send(f"{member}leave!")
+    channel = bot.get_channel(int(data['Leave_Channel']))
+    await channel.send(f"{member} leave!")
 
-bot.run("ODgwMzM1MzY2MDk4NDE5Nzgy.YScyMw.jPgdFHn3SHgremPd9k_ecTk19OU")
+@bot.command(pass_context=True) #括號內為權限許可
+async def ping(ctx):
+    await ctx.send(bot.latency)
+
+bot.run(data['token'])
